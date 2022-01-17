@@ -1,4 +1,4 @@
-# <a href="https://akabor.github.io/Shopping-Cart/>Shopping-Cart</a>
+# <a href="https://akabor.github.io/Shopping-Cart/">Shopping-Cart</a>
 ## Project Description
 Track items in stock and in shopping cart
 
