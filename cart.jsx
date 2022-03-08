@@ -1,7 +1,7 @@
-// simulate getting products from DataBase
+// starter set of products
 const products = [
-  { name: "Apple", country: "Italy", cost: 3, instock: 10 },
-  { name: "Orange", country: "Spain", cost: 4, instock: 3 },
+  { name: "Apples", country: "Italy", cost: 3, instock: 10 },
+  { name: "Oranges", country: "Spain", cost: 4, instock: 3 },
   { name: "Beans", country: "USA", cost: 2, instock: 5 },
   { name: "Cabbage", country: "USA", cost: 1, instock: 8 },
 ];
@@ -110,15 +110,20 @@ const Products = (props) => {
     setCart(newCart);
     setItems(newItems);
   };
-  const photos = ["apple.png", "orange.png", "beans.png", "cabbage.png"];
-
+  const photos = ["apples.png", "oranges.png", "beans.png", "cabbage.png"];
+  const getPhoto = (item) => {
+    let itemName = item.name.toLowerCase();
+    for (let i = 0; i < photos.length; i++) {
+      if (photos[i].includes(itemName)) return photos[i];
+    }
+    return (
+      "https://picsum.photos/id/" + Math.ceil(Math.random() * 1000) + "/50/50"
+    );
+  };
   let list = items.map((item, index) => {
-    //let n = index + 1049;
-    //let url = "https://picsum.photos/id/" + n + "/50/50";
-
     return (
       <li key={index} id="product">
-        <Image src={photos[index % 4]} width={50} roundedCircle></Image>
+        <Image src={getPhoto(item)} width={50} roundedCircle></Image>
         <div>
           {item.name} <br />
           (${item.cost} per item, {item.instock} in stock)
@@ -174,13 +179,22 @@ const Products = (props) => {
     console.log(`total updated to ${newTotal}`);
     return newTotal;
   };
-  // TODO: implement the restockProducts function
+
   const restockProducts = (url) => {
     doFetch(url);
     let newItems = data.data.map((item) => {
       let { name, country, cost, instock } = item.attributes;
       return { name, country, cost, instock };
     });
+    for (let i = 0; i < newItems.length; i++) {
+      for (let j = 0; j < items.length; j++) {
+        if (newItems[i].name == items[j].name) {
+          items[j].instock += newItems[i].instock;
+          newItems.splice(i, 1);
+          continue;
+        }
+      }
+    }
     setItems([...items, ...newItems]);
   };
 
@@ -197,7 +211,9 @@ const Products = (props) => {
         </Col>
         <Col>
           <h2>Check Out </h2>
-          <Button onClick={checkOut}>Cart Total: ${finalList().total}</Button>
+          <Button onClick={() => setCart([])}>
+            Cart Total: ${finalList().total}
+          </Button>
           <div> {finalList().total > 0 && finalList().final} </div>
         </Col>
       </Row>
